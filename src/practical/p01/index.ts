@@ -24,7 +24,7 @@ type User = {
   }
 }
 
-type ExpectUser = {
+export type ExpectUser = {
     id: number
     name: string
     phone: string

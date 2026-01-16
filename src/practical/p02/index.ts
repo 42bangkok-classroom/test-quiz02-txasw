@@ -1,3 +1,5 @@
+import { promiseHooks } from "node:v8";
+import { ExpectUser, getPostalAddress } from "../p01";
 type newUser = {
   name: string;
   username?: string;
@@ -20,4 +22,14 @@ type newUser = {
     bs: string;
   };
 };
-export function addUser(newUser: newUser | null) {}
+export async function addUser(newUser: newUser | null) {
+  let users = await getPostalAddress()
+  if (!newUser) return users
+  const newu = {
+    id: users.length,
+    name: newUser.name,
+    phone: newUser.phone,
+    address: newUser.address ?? null
+  }
+  return users.push(newu)
+}
