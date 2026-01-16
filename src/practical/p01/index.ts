@@ -1,4 +1,5 @@
 import axios from "axios"
+import { arrayBuffer } from "node:stream/consumers"
 
 type User = {
   id: number
@@ -24,23 +25,19 @@ type User = {
   }
 }
 
-
 export async function getPostalAddress() {
     const users: User[] = (await axios.get("https://jsonplaceholder.typicode.com/users")).data
 
-    if (users?.length == 0 ) return []
-    const expect_user = Array.from(users.map(u => {
-        return{
-            id: u.id,
-            name: u.name,
-            phone: u.phone,
-            address: u.address ?? null
-        }
+    const usersArray = Array.from(users)
 
+    if (!users) return []
+
+    const usersMap = usersArray.map(user => ({
+        id: user.id,
+        name:user.name,
+        phone:user.phone,
+        address: user.address ?? null
     }))
-    return expect_user
+    
+    return usersMap
 }
-
-getPostalAddress().then(u => {
-    console.log(u)
-})
