@@ -1,5 +1,4 @@
 import axios from "axios"
-import { arrayBuffer } from "node:stream/consumers"
 
 type User = {
   id: number
@@ -25,14 +24,36 @@ type User = {
   }
 }
 
-export async function getPostalAddress() {
+type ExpectUser = {
+    id: number
+    name: string
+    phone: string
+    address: {
+    street: string
+    suite: string
+    city: string
+    zipcode: string
+    geo: {
+      lat: string
+      lng: string
+    }
+  } | null
+}
+
+export async function getUsers(): Promise<ExpectUser[]> {
     const users: User[] = (await axios.get("https://jsonplaceholder.typicode.com/users")).data
 
     const usersArray = Array.from(users)
 
-    if (!users) return []
+    if (!usersArray) return []
+    return usersArray
+}
 
-    const usersMap = usersArray.map(user => ({
+export async function getPostalAddress() {
+    
+    const usersArray = await getUsers()
+
+    const usersMap: ExpectUser[] = usersArray.map(user => ({
         id: user.id,
         name:user.name,
         phone:user.phone,
